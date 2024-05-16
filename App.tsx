@@ -3,7 +3,8 @@ import { StatusBar } from "expo-status-bar";
 import Constants from "expo-constants";
 import { Pressable, Text, TextInput, View } from "react-native";
 import InputItem from "@/components/InputItem";
-
+import { AntDesign } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 const STATUSBARHEIGHT = Constants.statusBarHeight;
 
 export default function App() {
@@ -63,13 +64,35 @@ export default function App() {
           }}
         >
           <View style={{ flex: 1 }}></View>
-          <View style={{ flex: 1 }}>
-            <Pressable onPress={() => {}}>
-              <Text style={{ textAlign: "center" }}>start/stop</Text>
+          <View
+            style={{
+              display: "flex",
+              flex: 1,
+              flexDirection: "row",
+              justifyContent: "center",
+            }}
+          >
+            <Pressable
+              onPress={() => {
+                console.log("clicked");
+              }}
+            >
+              <AntDesign name="play" size={50} color="black" />
             </Pressable>
           </View>
-          <View style={{ flex: 1 }} >
-            <Text style={{textAlign:"center"}} >选择bgm</Text>
+          <View
+            style={{
+              display: "flex",
+              flex: 1,
+              flexDirection: "row",
+              justifyContent: "center",
+            }}
+          >
+            <MaterialCommunityIcons
+              name="music-circle"
+              size={60}
+              color="black"
+            />
           </View>
         </View>
       </View>
