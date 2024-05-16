@@ -16,14 +16,25 @@ export default function App() {
     return time >= 10 ? "" + time : "0" + time;
   };
   return (
-    <View style={{ marginTop: STATUSBARHEIGHT }} className="flex flex-1">
-      <View className="flex  flex-1 justify-center items-center">
-        <Text className="text-8xl">
+    <View style={{ marginTop: STATUSBARHEIGHT, display: "flex", flex: 1 }}>
+      <View
+        style={{
+          display: "flex",
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 70,
+          }}
+        >
           {formatTime(minutes) + ":" + formatTime(seconds)}
         </Text>
       </View>
-      <View className="flex flex-1">
-        <View className="flex flex-1 justify-center">
+      <View style={{ display: "flex", flex: 1 }}>
+        <View style={{ display: "flex", flex: 1, justifyContent: "center" }}>
           <InputItem
             leftTitle="番茄"
             inputText={tomatoes}
@@ -43,15 +54,22 @@ export default function App() {
             rightTitle="分钟"
           ></InputItem>
         </View>
-        <View className="flex flex-1 flex-row items-center">
-          <View className="flex-1"></View>
-          <View className="flex-1">
+        <View
+          style={{
+            display: "flex",
+            flex: 1,
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <View style={{ flex: 1 }}></View>
+          <View style={{ flex: 1 }}>
             <Pressable onPress={() => {}}>
-              <Text className="text-center">start/stop</Text>
+              <Text style={{ textAlign: "center" }}>start/stop</Text>
             </Pressable>
           </View>
-          <View className="flex-1">
-            <Text className="text-center">选择bgm</Text>
+          <View style={{ flex: 1 }} >
+            <Text style={{textAlign:"center"}} >选择bgm</Text>
           </View>
         </View>
       </View>

@@ -21,19 +21,24 @@ export default function InputItem({
         justifyContent: "center",
       }}
     >
-      <Text style={{ fontSize: 3, marginHorizontal: 2 }}>{leftTitle}</Text>
+      <Text style={{ fontSize: 30, marginHorizontal: 2 }}>{leftTitle}</Text>
       <TextInput
         style={{
           borderStyle: "solid",
-          fontSize: 3,
-          marginHorizontal: 2,
+          textAlign: "center",
+          fontSize: 25,
+          width: 70,
+          borderWidth: 1,
+          marginHorizontal: 20,
         }}
+        maxLength={4}
+        defaultValue="0"
         value={inputText}
         onChangeText={(text) => updateText(text)}
       ></TextInput>
       <Text
         style={{
-          fontSize: 3,
+          fontSize: 30,
         }}
       >
         {rightTitle}
