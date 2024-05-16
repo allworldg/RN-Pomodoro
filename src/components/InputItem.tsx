@@ -1,0 +1,43 @@
+import React from "react";
+import { View, Text, TextInput } from "react-native";
+
+export default function InputItem({
+  leftTitle,
+  inputText,
+  updateText,
+  rightTitle,
+}: {
+  leftTitle: string;
+  inputText: string;
+  updateText: Function;
+  rightTitle: string;
+}) {
+  return (
+    <View
+      style={{
+        marginVertical: 3,
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "center",
+      }}
+    >
+      <Text style={{ fontSize: 3, marginHorizontal: 2 }}>{leftTitle}</Text>
+      <TextInput
+        style={{
+          borderStyle: "solid",
+          fontSize: 3,
+          marginHorizontal: 2,
+        }}
+        value={inputText}
+        onChangeText={(text) => updateText(text)}
+      ></TextInput>
+      <Text
+        style={{
+          fontSize: 3,
+        }}
+      >
+        {rightTitle}
+      </Text>
+    </View>
+  );
+}
