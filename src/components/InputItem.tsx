@@ -1,16 +1,26 @@
-import React from "react";
-import { View, Text, TextInput } from "react-native";
+import React, { forwardRef } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  NativeSyntheticEvent,
+  TextInputEndEditingEventData,
+} from "react-native";
 
 export default function InputItem({
   leftTitle,
-  inputText,
-  updateText,
   rightTitle,
+  value,
+  valueUpdate,
+  validateAndStore,
 }: {
   leftTitle: string;
-  inputText: string;
-  updateText: Function;
   rightTitle: string;
+  value: string;
+  valueUpdate: (text: string) => void;
+  validateAndStore: (
+    e: NativeSyntheticEvent<TextInputEndEditingEventData>
+  ) => void;
 }) {
   return (
     <View
@@ -33,8 +43,9 @@ export default function InputItem({
         }}
         maxLength={4}
         defaultValue="0"
-        value={inputText}
-        onChangeText={(text) => updateText(text)}
+        value={value}
+        onChangeText={valueUpdate}
+        onEndEditing={validateAndStore}
       ></TextInput>
       <Text
         style={{
