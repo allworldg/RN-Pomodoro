@@ -4,8 +4,6 @@ import Constants from "expo-constants";
 import {
   Pressable,
   Text,
-  TextInput,
-  TextInputAndroidProps,
   View,
 } from "react-native";
 import InputItem from "@/components/InputItem";
@@ -25,7 +23,7 @@ export default function App() {
   const [status, setStatus] = useState<Number>(STATUS.STOP);
   const formatTime = (time: number): string => {
     time = Math.trunc(time);
-    return time > 10 ? time + "" : "0" + time;
+    return time >= 10 ? time + "" : "0" + time;
   };
 
   const start = (): void => {
@@ -34,7 +32,6 @@ export default function App() {
     const targetTime = now.getTime() + 60 * Number(tomatoes) * 1000;
     timeId.current = setTimeout(() => {
       const remainTime = (targetTime - Date.now()) / 1000;
-      console.log(remainTime);
       setMinutes(remainTime / 60);
       setSeconds(remainTime % 60);
       countDown(targetTime);
@@ -42,7 +39,6 @@ export default function App() {
   };
   const countDown = (targetTime: number): void => {
     const remainTime = (targetTime - Date.now()) / 1000;
-    console.log(remainTime)
     if (remainTime <= 0) {
       stop();
       return;
@@ -51,7 +47,7 @@ export default function App() {
     setSeconds(remainTime % 60);
     timeId.current = setTimeout(() => {
       countDown(targetTime);
-    }, 500);
+    }, 100);
   };
   const stop = (): void => {
     clearTimeout(timeId.current);
