@@ -10,15 +10,23 @@ import ClockView from "@/components/ClockView";
 const STATUSBARHEIGHT = Constants.statusBarHeight;
 
 export default function App() {
+  const getStoreValue = (): {
+    tomatoes: string;
+    rests: string;
+    times: string;
+  } => {
+    return { tomatoes: "5", rests: "0", times: "0" };
+  };
+
   const [remainSeconds, setRemainSeconds] = useState<number>(0);
-  const [tomatoes, setTomatoes] = useState<string>("0");
-  const [rests, setRests] = useState<string>("0");
-  const [times, setTimes] = useState<string>("0");
+  const [tomatoes, setTomatoes] = useState<string>(getStoreValue().tomatoes);
+  const [rests, setRests] = useState<string>(getStoreValue().rests);
+  const [times, setTimes] = useState<string>(getStoreValue().times);
 
   const timeId = useRef<any>(0);
   const [status, setStatus] = useState<Number>(STATUS.STOP);
-
   const start = (): void => {
+    validateAndStore();
     setStatus(STATUS.WORKING);
     const now = new Date();
     const targetTime = now.getTime() + 60 * Number(tomatoes) * 1000;
@@ -45,6 +53,38 @@ export default function App() {
     setStatus(STATUS.STOP);
   };
 
+  const isInRange = (value: string, min: number, max: number): boolean => {
+    if (
+      typeof value !== "string" ||
+      value.trim() === "" ||
+      isNaN(value as any) // escape check
+    ) {
+      return false;
+    }
+    const number = parseInt(value);
+    if (number >= min && number <= max) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  const validateAndStore = (): void => {
+    if (
+      isInRange(tomatoes, 1, 9999) &&
+      isInRange(rests, 0, 9999) &&
+      isInRange(times, 0, 9999)
+    ) {
+      setTomatoes(parseInt(tomatoes).toString());
+      setRests(parseInt(rests).toString());
+      setTimes(parseInt(times).toString());
+    } else {
+      setTomatoes(getStoreValue().tomatoes);
+      setRests(getStoreValue().rests);
+      setTimes(getStoreValue().times);
+    }
+  };
+
   return (
     <View style={{ marginTop: STATUSBARHEIGHT, display: "flex", flex: 1 }}>
       <ClockView remainSeconds={remainSeconds} />
@@ -55,21 +95,21 @@ export default function App() {
             rightTitle="分钟"
             value={tomatoes}
             valueUpdate={(text) => setTomatoes(text)}
-            validateAndStore={(e) => {}}
+            validateAndStore={validateAndStore}
           ></InputItem>
           <InputItem
             leftTitle="循环"
             rightTitle="次数"
             value={times}
             valueUpdate={(text) => setTimes(text)}
-            validateAndStore={(e) => {}}
+            validateAndStore={validateAndStore}
           ></InputItem>
           <InputItem
             leftTitle="休息"
             rightTitle="分钟"
             value={rests}
             valueUpdate={(text) => setRests(text)}
-            validateAndStore={(e) => {}}
+            validateAndStore={validateAndStore}
           ></InputItem>
         </View>
         <View
