@@ -1,27 +1,45 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import Constants from "expo-constants";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, View } from "react-native";
 import InputItem from "@/components/InputItem";
 import { AntDesign } from "@expo/vector-icons";
 import { MaterialCommunityIcons, FontAwesome } from "@expo/vector-icons";
-import { STATUS } from "@/constants";
+import {
+  DEFAULT_RESTS,
+  DEFAULT_TIMES,
+  DEFAULT_TOMATOES,
+  STATUS,
+} from "@/constants";
 import ClockView from "@/components/ClockView";
+import { asyncGetInputValue, asyncStoreInputValue } from "@/utils";
 const STATUSBARHEIGHT = Constants.statusBarHeight;
 
 export default function App() {
-  const getStoreValue = (): {
-    tomatoes: string;
-    rests: string;
-    times: string;
-  } => {
-    return { tomatoes: "5", rests: "0", times: "0" };
-  };
-
   const [remainSeconds, setRemainSeconds] = useState<number>(0);
-  const [tomatoes, setTomatoes] = useState<string>(getStoreValue().tomatoes);
-  const [rests, setRests] = useState<string>(getStoreValue().rests);
-  const [times, setTimes] = useState<string>(getStoreValue().times);
+  const [tomatoes, setTomatoes] = useState<string>(DEFAULT_TOMATOES);
+  const [rests, setRests] = useState<string>(DEFAULT_RESTS);
+  const [times, setTimes] = useState<string>(DEFAULT_TIMES);
+
+  const initialValue = () => {
+    asyncGetInputValue().then((res) => {
+      if (res === null) {
+        asyncStoreInputValue({
+          tomatoes: DEFAULT_TOMATOES,
+          rests: DEFAULT_RESTS,
+          times: DEFAULT_TIMES,
+        });
+      } else {
+        setTomatoes(res.tomatoes);
+        setRests(res.rests);
+        setTimes(res.times);
+      }
+    });
+  };
+  useEffect(() => {
+    initialValue();
+    return () => {};
+  }, []);
 
   const timeId = useRef<any>(0);
   const [status, setStatus] = useState<Number>(STATUS.STOP);
@@ -75,13 +93,19 @@ export default function App() {
       isInRange(rests, 0, 9999) &&
       isInRange(times, 0, 9999)
     ) {
-      setTomatoes(parseInt(tomatoes).toString());
-      setRests(parseInt(rests).toString());
-      setTimes(parseInt(times).toString());
+      const tomatoesStr = parseInt(tomatoes).toString();
+      const restsStr = parseInt(rests).toString();
+      const timesStr = parseInt(times).toString();
+      setTomatoes(tomatoesStr);
+      setRests(restsStr);
+      setTimes(timesStr);
+      asyncStoreInputValue({
+        tomatoes: tomatoesStr,
+        rests: restsStr,
+        times: timesStr,
+      });
     } else {
-      setTomatoes(getStoreValue().tomatoes);
-      setRests(getStoreValue().rests);
-      setTimes(getStoreValue().times);
+      initialValue();
     }
   };
 
