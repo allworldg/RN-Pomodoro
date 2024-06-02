@@ -1,6 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { STORAGE_VALUE } from "./constants";
-
 export const asyncStoreInputValue = async (value: {
   tomatoes: string;
   rests: string;
