@@ -7,22 +7,24 @@ import InputItem from "@/components/InputItem";
 import { AntDesign } from "@expo/vector-icons";
 import { MaterialCommunityIcons, FontAwesome } from "@expo/vector-icons";
 import {
+  DEFAULT_CYCLES,
   DEFAULT_RESTS,
   DEFAULT_TIMES,
   DEFAULT_TOMATOES,
   STARTED,
-  STATES,
+  STATES_STR,
 } from "@/constants";
 import ClockView from "@/components/ClockView";
 import { asyncGetInputValue, asyncStoreInputValue } from "@/utils";
 import useStatesEnum from "@/useStatesEnum";
+import StateTitle from "./components/StateTitle";
 const STATESBARHEIGHT = Constants.statusBarHeight;
 export default function Index() {
   const [remainSeconds, setRemainSeconds] = useState<number>(0);
   const [tomatoes, setTomatoes] = useState<string>(DEFAULT_TOMATOES);
   const [rests, setRests] = useState<string>(DEFAULT_RESTS);
   const [times, setTimes] = useState<string>(DEFAULT_TIMES);
-  const state = useRef<string>(STATES.STOP);
+  const [state, setState] = useState<STATES_STR>(STATES_STR.STOP);
   const [isStarted, setIsStarted] = useState<boolean>(!STARTED);
   const {
     cycles,
@@ -60,41 +62,40 @@ export default function Index() {
   const timeId = useRef<any>(0);
   const start = (): void => {
     validateAndStore();
-    setIsStarted(STARTED);
-    state.current = STATES.TOMATOE;
+    setState(STATES_STR.TOMATOE);
     const now = new Date();
     const targetTime = now.getTime() + 60 * Number(tomatoes) * 1000;
     timeId.current = setTimeout(() => {
       setRemainSeconds((targetTime - Date.now()) / 1000);
-      countDown(targetTime);
+      countDown(targetTime, STATES_STR.TOMATOE);
     }, 10);
   };
-  const countDown = (targetTime: number): void => {
+  const countDown = (targetTime: number, countState: STATES_STR): void => {
     setRemainSeconds((targetTime - Date.now()) / 1000);
-    const localState = statesEnum[state.current].countDown(targetTime);
-    if (localState === STATES.STOP) {
-      console.log("stop");
+    const localState = statesEnum[countState].countDown(targetTime);
+    if (localState === STATES_STR.STOP) {
       stop();
       return;
     }
-    if (state.current !== localState) {
-      if (localState === STATES.TOMATOE) {
+    if (countState !== localState) {
+      if (localState === STATES_STR.TOMATOE) {
         targetTime = Date.now() + Number(tomatoes) * 60 * 1000;
       } else {
         targetTime = Date.now() + Number(rests) * 60 * 1000;
       }
-      state.current = localState;
+      countState = localState;
+      setState(localState);
     }
     timeId.current = setTimeout(() => {
-      countDown(targetTime);
+      countDown(targetTime, countState);
     }, 100);
   };
   const stop = (): void => {
     clearTimeout(timeId.current);
     timeId.current = 0;
+    cycles.current = DEFAULT_CYCLES;
     setRemainSeconds(0);
-    console.log("end");
-    setIsStarted(!STARTED);
+    setState(STATES_STR.STOP);
   };
 
   const isInRange = (value: string, min: number, max: number): boolean => {
@@ -139,7 +140,11 @@ export default function Index() {
 
   return (
     <View style={{ marginTop: STATESBARHEIGHT, display: "flex", flex: 1 }}>
-      <ClockView remainSeconds={remainSeconds} />
+      <View style={{ flex: 1, justifyContent: "center" }}>
+        <ClockView remainSeconds={remainSeconds} />
+        <StateTitle state={state} />
+      </View>
+
       <View style={{ display: "flex", flex: 1 }}>
         <View style={{ display: "flex", flex: 1, justifyContent: "center" }}>
           <InputItem
@@ -181,7 +186,7 @@ export default function Index() {
               justifyContent: "center",
             }}
           >
-            {isStarted !== STARTED ? (
+            {state === STATES_STR.STOP ? (
               <Pressable onPress={() => start()}>
                 <AntDesign name="play" size={50} color="black" />
               </Pressable>

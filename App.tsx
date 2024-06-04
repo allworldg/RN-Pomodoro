@@ -1,10 +1,11 @@
 import Index from "@/Index";
 import ClockContext from "@/ClockContext";
+import { DEFAULT_CYCLES, DEFAULT_TIMES } from "@/constants";
 
 export default function App() {
   const value = {
-    cycles: { current: 0 },
-    times: { current: 0 },
+    cycles: { current: DEFAULT_CYCLES },
+    times: { current: parseInt(DEFAULT_TIMES) },
     isPlaying: { current: false },
     hasRest: { current: false },
   };
