@@ -15,7 +15,7 @@ import {
   STATES_STR,
 } from "@/constants";
 import ClockView from "@/components/ClockView";
-import { asyncGetInputValue, asyncStoreInputValue } from "@/utils";
+import { asyncGetInputValue, asyncStoreInputValue } from "@/utils/localStore";
 import useStatesEnum from "@/useStatesEnum";
 import StateTitle from "./components/StateTitle";
 const STATESBARHEIGHT = Constants.statusBarHeight;
