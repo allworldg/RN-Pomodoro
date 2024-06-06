@@ -2,7 +2,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import Constants from "expo-constants";
 import ClockContext from "@/ClockContext";
-import { Pressable, View } from "react-native";
+import { Platform, Pressable, View, Text } from "react-native";
 import InputItem from "@/components/InputItem";
 import { AntDesign } from "@expo/vector-icons";
 import { MaterialCommunityIcons, FontAwesome } from "@expo/vector-icons";
@@ -18,6 +18,8 @@ import ClockView from "@/components/ClockView";
 import { asyncGetInputValue, asyncStoreInputValue } from "@/utils/localStore";
 import useStatesEnum from "@/useStatesEnum";
 import StateTitle from "./components/StateTitle";
+import useNotification from "./utils/useNotification";
+
 const STATESBARHEIGHT = Constants.statusBarHeight;
 export default function Index() {
   const [remainSeconds, setRemainSeconds] = useState<number>(0);
@@ -26,6 +28,7 @@ export default function Index() {
   const [times, setTimes] = useState<string>(DEFAULT_TIMES);
   const [state, setState] = useState<STATES_STR>(STATES_STR.STOP);
   const [isStarted, setIsStarted] = useState<boolean>(!STARTED);
+
   const {
     cycles,
     isPlaying,
@@ -58,7 +61,6 @@ export default function Index() {
     initialValue();
     return () => {};
   }, []);
-
   const timeId = useRef<any>(0);
   const start = (): void => {
     validateAndStore();
@@ -137,6 +139,7 @@ export default function Index() {
       initialValue();
     }
   };
+  const schedulePushNotification = useNotification();
 
   return (
     <View style={{ marginTop: STATESBARHEIGHT, display: "flex", flex: 1 }}>
@@ -195,6 +198,13 @@ export default function Index() {
                 <FontAwesome name="stop-circle" size={50} color="black" />
               </Pressable>
             )}
+            <Pressable
+              onPress={async () => {
+                await schedulePushNotification();
+              }}
+            >
+              <Text>notification</Text>
+            </Pressable>
           </View>
           <View
             style={{
@@ -212,6 +222,7 @@ export default function Index() {
           </View>
         </View>
       </View>
+
       <StatusBar />
     </View>
   );
