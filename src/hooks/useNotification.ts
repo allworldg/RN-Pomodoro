@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { Platform } from "react-native";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
+import { NOTIFICATION_TITLE } from "@/constants";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -64,12 +65,12 @@ export default function useNotification() {
       alert("Must use physical device for Push Notifications");
     }
   }
-  async function schedulePushNotification() {
+  async function schedulePushNotification(body: string) {
     await Notifications.scheduleNotificationAsync({
       content: {
-        title: "You've got mail! 📬",
-        body: "Here is the notification body",
-        data: { data: "goes here", test: { test1: "more data" } },
+        title: NOTIFICATION_TITLE,
+        body: body,
+        data: {},
       },
       trigger: null,
     });

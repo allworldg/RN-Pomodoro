@@ -1,7 +1,7 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import Constants from "expo-constants";
-import ClockContext from "@/ClockContext";
+import ClockContext from "@/hooks/ClockContext";
 import { Platform, Pressable, View, Text } from "react-native";
 import InputItem from "@/components/InputItem";
 import { AntDesign } from "@expo/vector-icons";
@@ -11,14 +11,15 @@ import {
   DEFAULT_RESTS,
   DEFAULT_TIMES,
   DEFAULT_TOMATOES,
+  MINUTE,
   STARTED,
   STATES_STR,
 } from "@/constants";
 import ClockView from "@/components/ClockView";
 import { asyncGetInputValue, asyncStoreInputValue } from "@/utils/localStore";
-import useStatesEnum from "@/useStatesEnum";
+import useStatesEnum from "@/hooks/useStatesEnum";
 import StateTitle from "./components/StateTitle";
-import useNotification from "./utils/useNotification";
+import useNotification from "./hooks/useNotification";
 
 const STATESBARHEIGHT = Constants.statusBarHeight;
 export default function Index() {
@@ -66,7 +67,7 @@ export default function Index() {
     validateAndStore();
     setState(STATES_STR.TOMATOE);
     const now = new Date();
-    const targetTime = now.getTime() + 60 * Number(tomatoes) * 1000;
+    const targetTime = now.getTime() + Number(tomatoes) * MINUTE;
     timeId.current = setTimeout(() => {
       setRemainSeconds((targetTime - Date.now()) / 1000);
       countDown(targetTime, STATES_STR.TOMATOE);
@@ -81,9 +82,9 @@ export default function Index() {
     }
     if (countState !== localState) {
       if (localState === STATES_STR.TOMATOE) {
-        targetTime = Date.now() + Number(tomatoes) * 60 * 1000;
+        targetTime = Date.now() + Number(tomatoes) * MINUTE;
       } else {
-        targetTime = Date.now() + Number(rests) * 60 * 1000;
+        targetTime = Date.now() + Number(rests) * MINUTE;
       }
       countState = localState;
       setState(localState);
@@ -198,13 +199,6 @@ export default function Index() {
                 <FontAwesome name="stop-circle" size={50} color="black" />
               </Pressable>
             )}
-            <Pressable
-              onPress={async () => {
-                await schedulePushNotification();
-              }}
-            >
-              <Text>notification</Text>
-            </Pressable>
           </View>
           <View
             style={{
@@ -222,7 +216,6 @@ export default function Index() {
           </View>
         </View>
       </View>
-
       <StatusBar />
     </View>
   );

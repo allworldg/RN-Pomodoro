@@ -1,5 +1,5 @@
 import React, { createContext } from "react";
-import { DEFAULT_CYCLES, DEFAULT_TIMES } from "./constants";
+import { DEFAULT_CYCLES, DEFAULT_TIMES } from "../constants";
 
 interface MyContextType {
   cycles: React.MutableRefObject<number>;

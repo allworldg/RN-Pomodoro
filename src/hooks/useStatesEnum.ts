@@ -1,14 +1,19 @@
-import ClockContext from "@/ClockContext";
-import { STATES_STR } from "./constants";
+import ClockContext from "@/hooks/ClockContext";
+import {
+  NOTIFICATION_BODY_END,
+  NOTIFICATION_BODY_START_REST,
+  NOTIFICATION_BODY_START_WORK,
+  STATES_STR,
+} from "../constants";
 import { useContext } from "react";
+import useNotification from "./useNotification";
 
 interface countDown {
   countDown: (targetTime: number) => STATES_STR;
-  notification: () => void;
 }
 export default function useStatesEnum() {
   const { cycles, times, hasRest, isPlaying } = useContext(ClockContext);
-
+  const notification = useNotification();
   const statesEnum: { [index: string]: countDown } = {
     TOMATOE: {
       countDown(targetTime: number): STATES_STR {
@@ -18,17 +23,18 @@ export default function useStatesEnum() {
         }
         if (hasRest.current === false) {
           if (cycles.current === times.current) {
-            this.notification();
+            notification(NOTIFICATION_BODY_END);
             return STATES_STR.STOP;
           } else {
             cycles.current++;
+            notification(NOTIFICATION_BODY_START_WORK);
             return STATES_STR.TOMATOE;
           }
         } else {
+          notification(NOTIFICATION_BODY_START_REST);
           return STATES_STR.REST;
         }
       },
-      notification() {},
     },
     REST: {
       countDown(targetTime: number): STATES_STR {
@@ -37,15 +43,14 @@ export default function useStatesEnum() {
           return STATES_STR.REST;
         }
         if (cycles.current === times.current) {
-          this.notification();
+          notification(NOTIFICATION_BODY_END);
           return STATES_STR.STOP;
         } else {
-          this.notification();
           cycles.current++;
+          notification(NOTIFICATION_BODY_START_WORK);
           return STATES_STR.TOMATOE;
         }
       },
-      notification() {},
     },
   };
 

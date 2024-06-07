@@ -1,5 +1,5 @@
 import Index from "@/Index";
-import ClockContext from "@/ClockContext";
+import ClockContext from "@/hooks/ClockContext";
 import { DEFAULT_CYCLES, DEFAULT_TIMES } from "@/constants";
 
 export default function App() {
